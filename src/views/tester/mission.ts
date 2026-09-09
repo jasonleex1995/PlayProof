@@ -8,6 +8,11 @@ import {
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
+const DEFAULT_FEEDBACK =
+  "롤만 해봐서 그런지, 보스가 패턴으로 움직이는지 잘 몰랐어요. 몇 번 죽어도 이유가 안 보였고 그냥 운으로 피한 느낌이었습니다.";
+const DEFAULT_IMPROVEMENT =
+  "처음 죽었을 때 어디를 노리면 되는지 더 쉽게 보이면 좋겠어요. 표시나 이펙트가 확실하면 일반인도 따라가기 쉬울 것 같습니다.";
+
 export function renderTesterMission(root: HTMLElement, id: string): void {
   const mission = missions.find((m) => m.id === id);
   if (!mission) {
@@ -39,7 +44,7 @@ export function renderTesterMission(root: HTMLElement, id: string): void {
           </div>
           <button class="btn btn-secondary" type="button" id="back">보드로</button>
         </div>
-        <div class="split">
+        <div class="split mission-layout">
           <div class="stack">
             <div class="card">
               <h3>미션 브리프</h3>
@@ -80,40 +85,40 @@ export function renderTesterMission(root: HTMLElement, id: string): void {
               canSubmit
                 ? `
               <form class="card form" id="submit-form">
-                <h3 style="margin:0;">${status === "submitted" ? "제출 완료 · 다시 제출 (데모)" : "당선 미션 제출"}</h3>
+                <h3 style="margin:0;">${status === "submitted" ? "제출 완료 · 다시 제출" : "당선 미션 제출"}</h3>
                 <div class="field" style="margin-top:0.85rem;">
                   <label for="file">플레이 영상 *</label>
                   <input id="file" name="file" type="file" accept="video/*" />
-                  <div class="help">데모에서는 파일 전송 없이 제출만 시뮬레이션합니다.</div>
+                  <div class="help">데모에서는 파일 선택 여부와 관계없이 제출할 수 있습니다.</div>
                 </div>
                 <div class="field">
                   <label for="feedback">정성 피드백 *</label>
-                  <textarea id="feedback" name="feedback" required placeholder="예: 패턴이 있다는 걸 늦게 알아챘고, 초반은 운으로 버티는 느낌이었습니다."></textarea>
+                  <textarea id="feedback" name="feedback" required>${DEFAULT_FEEDBACK}</textarea>
                 </div>
                 <div class="field">
                   <label for="improvement">개선점 *</label>
-                  <textarea id="improvement" name="improvement" required placeholder="예: 첫 실패 후 약점을 이펙트로 한 번 더 강조해 주세요."></textarea>
+                  <textarea id="improvement" name="improvement" required>${DEFAULT_IMPROVEMENT}</textarea>
                 </div>
-                <button class="btn btn-primary" type="submit">데모 제출</button>
+                <button class="btn btn-primary" type="submit">제출하기</button>
               </form>`
                 : ""
             }
           </div>
-          <aside class="stack">
-            <div class="card stat">
+          <aside class="mission-aside">
+            <div class="mission-aside-card">
               <strong>${formatKRW(mission.reward)}</strong>
               <span>완료 시 리워드</span>
             </div>
-            <div class="card">
+            <div class="mission-aside-card">
               <h3>조건</h3>
-              <p style="margin-top:0.5rem;">약 ${mission.minutes}분 · 잔여 ${mission.slotsLeft}석</p>
-              <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.7rem;">
+              <p>약 ${mission.minutes}분 · 잔여 ${mission.slotsLeft}석</p>
+              <div class="mission-aside-tags">
                 ${mission.tags.map((t) => `<span class="badge">${t}</span>`).join("")}
               </div>
             </div>
-            <div class="card">
+            <div class="mission-aside-card">
               <h3>진행 상태</h3>
-              <ol class="demo-steps" style="margin-top:0.55rem;">
+              <ol class="demo-steps">
                 <li class="${status !== "open" ? "done" : ""}">지원</li>
                 <li class="${status === "selected" || status === "submitted" ? "done" : ""}">당선</li>
                 <li class="${status === "submitted" ? "done" : ""}">영상·정성 제출</li>
@@ -159,7 +164,7 @@ export function renderTesterMission(root: HTMLElement, id: string): void {
         }),
       );
       alert(
-        `데모 제출 완료\n\n미션: ${mission.title}\n정성·개선점이 제작사 레포트 패키지에 포함됩니다.\n검수 후 ${formatKRW(mission.reward)} 적립 예정`,
+        `제출 완료\n\n미션: ${mission.title}\n검수 후 ${formatKRW(mission.reward)} 적립 예정`,
       );
       navigate({ name: "tester-home" });
     });
