@@ -80,7 +80,7 @@ export function renderHome(root: HTMLElement): void {
               <tbody>
                 <tr>
                   <th scope="row">일반인 테스터</th>
-                  <td><span class="ox no">△</span><small>숙련 패널 편향</small></td>
+                  <td><span class="ox no">X</span><small>숙련 패널 편향</small></td>
                   <td><span class="ox yes">O</span></td>
                   <td><span class="ox yes">O</span></td>
                 </tr>
@@ -98,15 +98,15 @@ export function renderHome(root: HTMLElement): void {
                 </tr>
                 <tr>
                   <th scope="row">원본 플레이 영상</th>
-                  <td><span class="ox mid">△</span></td>
-                  <td><span class="ox mid">△</span></td>
+                  <td><span class="ox no">X</span></td>
+                  <td><span class="ox no">X</span></td>
                   <td><span class="ox yes">O</span></td>
                 </tr>
                 <tr>
                   <th scope="row">인디가 감당 가능한 단가</th>
-                  <td><span class="ox no">X</span><small>~250만/건</small></td>
-                  <td><span class="ox no">X</span><small>~200만/박</small></td>
-                  <td><span class="ox yes">O</span><small>15만~</small></td>
+                  <td><span class="ox no">X</span><small>약 250만 원/건</small></td>
+                  <td><span class="ox no">X</span><small>약 200만 원/박</small></td>
+                  <td><span class="ox yes">O</span><small>약 15만 원~</small></td>
                 </tr>
               </tbody>
             </table>
