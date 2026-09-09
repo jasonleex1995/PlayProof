@@ -302,7 +302,7 @@ export const missions: Mission[] = [
     minutes: 12,
     slotsLeft: 14,
     deadline: "2026-09-15",
-    tags: ["RPG", "경제", "12분", "일반인"],
+    tags: ["RPG", "경제", "12분", "20~30대 남성"],
     brief:
       "허브에서 상점을 찾아 아이템을 살펴보고, 가능하면 구매까지 진행하세요. 화면 녹화 필수. 전문 테스터가 아닌 일반 플레이 감각으로 진행해 주세요.",
     defaultApplyStatus: "open",
@@ -331,7 +331,7 @@ export const missions: Mission[] = [
     minutes: 20,
     slotsLeft: 18,
     deadline: "2026-09-18",
-    tags: ["보스", "패턴", "20분", "일반인"],
+    tags: ["보스", "패턴", "20분", "20~30대 남성"],
     brief:
       "보스를 최대 20분 플레이하세요. 공략 영상을 보지 말고, 첫 플레이 감각 그대로 녹화해 주세요. 제출 시 느낀 점·개선점도 적어 주세요.",
     defaultApplyStatus: "open",

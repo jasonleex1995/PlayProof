@@ -89,15 +89,15 @@ export function renderTesterMission(root: HTMLElement, id: string): void {
                 <div class="field" style="margin-top:0.85rem;">
                   <label for="file">플레이 영상 *</label>
                   <input id="file" name="file" type="file" accept="video/*" />
-                  <div class="help">데모에서는 파일 선택 여부와 관계없이 제출할 수 있습니다.</div>
+                  <div class="help" id="file-help">데모 기본 영상: boss-pattern-20min.mp4 (실제 전송 없음)</div>
                 </div>
                 <div class="field">
                   <label for="feedback">정성 피드백 *</label>
-                  <textarea id="feedback" name="feedback" required>${DEFAULT_FEEDBACK}</textarea>
+                  <textarea id="feedback" name="feedback" required rows="4">${DEFAULT_FEEDBACK}</textarea>
                 </div>
                 <div class="field">
                   <label for="improvement">개선점 *</label>
-                  <textarea id="improvement" name="improvement" required>${DEFAULT_IMPROVEMENT}</textarea>
+                  <textarea id="improvement" name="improvement" required rows="3">${DEFAULT_IMPROVEMENT}</textarea>
                 </div>
                 <button class="btn btn-primary" type="submit">제출하기</button>
               </form>`
@@ -130,6 +130,21 @@ export function renderTesterMission(root: HTMLElement, id: string): void {
     });
 
     bindShellActions(root);
+    const fileInput = root.querySelector<HTMLInputElement>("#file");
+    if (fileInput) {
+      try {
+        const demo = new File(
+          ["PlayProof demo recording placeholder"],
+          "boss-pattern-20min.mp4",
+          { type: "video/mp4" },
+        );
+        const transfer = new DataTransfer();
+        transfer.items.add(demo);
+        fileInput.files = transfer.files;
+      } catch {
+        /* browsers may block programmatic file assignment */
+      }
+    }
     root.querySelector("#back")?.addEventListener("click", () =>
       navigate({ name: "tester-home" }),
     );
