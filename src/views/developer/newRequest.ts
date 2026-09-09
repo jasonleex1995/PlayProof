@@ -1,4 +1,4 @@
-import { estimateQuote, formatKRW, PACKAGES } from "../../data/mock";
+import { formatKRW, PACKAGES } from "../../data/mock";
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
@@ -12,13 +12,13 @@ export function renderDevNew(root: HTMLElement): void {
       <div class="page-header">
         <div>
           <h1>새 의뢰</h1>
-          <p>테스트할 구간과 기획 의도(가설)를 적으면 견적이 계산되고, 모집 공고로 이어집니다.</p>
+          <p>테스트할 구간과 기획 의도(가설)를 남기면 패키지 견적이 나오고, 접수 후 모집으로 이어집니다.</p>
         </div>
       </div>
       <div class="split">
         <form class="card form" id="new-form">
           <div class="field">
-            <label for="package">패키지 (발표 요금 기준)</label>
+            <label for="package">패키지</label>
             <select id="package" name="package">
               ${PACKAGES.map(
                 (p, i) =>
@@ -52,39 +52,25 @@ export function renderDevNew(root: HTMLElement): void {
           <div class="grid-2">
             <div class="field">
               <label for="testers">테스터 수</label>
-              <input id="testers" name="testers" type="number" min="5" max="200" value="${starter.testers}" />
+              <input id="testers" name="testers" type="number" min="5" max="200" value="${starter.testers}" readonly />
             </div>
             <div class="field">
               <label for="minutes">인당 시간(분)</label>
-              <input id="minutes" name="minutes" type="number" min="5" max="120" value="${starter.minutes}" />
-            </div>
-            <div class="field">
-              <label for="reward">인당 리워드(원)</label>
-              <input id="reward" name="reward" type="number" min="1000" step="100" value="${starter.reward}" />
-            </div>
-            <div class="field">
-              <label for="reportRate">레포트 요율</label>
-              <select id="reportRate" name="reportRate">
-                <option value="0.25" selected>스타터 패키지 포함 (~25%)</option>
-                <option value="0.153846">스탠다드 패키지 포함 (~15.4%)</option>
-                <option value="0.1">테스트비의 10%</option>
-                <option value="0.15">테스트비의 15%</option>
-                <option value="0">레포트 없이 영상·정성만</option>
-              </select>
+              <input id="minutes" name="minutes" type="number" min="5" max="120" value="${starter.minutes}" readonly />
             </div>
           </div>
-          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <button class="btn btn-primary" type="submit">데모: 의뢰 접수 → 모집 공고</button>
+          <p class="help">테스터 리워드·정산은 PlayProof가 운영에서 관리합니다. 스튜디오에는 패키지 합계만 청구됩니다.</p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.35rem;">
+            <button class="btn btn-primary" type="submit">의뢰 접수하기</button>
             <button class="btn btn-secondary" type="button" id="back">취소</button>
           </div>
         </form>
         <aside class="stack">
           <div class="card">
             <h3>견적 미리보기</h3>
-            <p class="help" style="margin-bottom:0.8rem;">테스터 리워드 + 정량 레포트 (정성·원본 영상 포함 납품)</p>
+            <p class="help" style="margin-bottom:0.8rem;">패키지 요금 (정량 레포트 · 정성 피드백 · 원본 영상 포함)</p>
             <div class="quote-box" id="quote">
-              <div>테스터 예산: —</div>
-              <div>영상 분석 레포트: —</div>
+              <div>규모: —</div>
               <div class="total">합계: —</div>
             </div>
           </div>
@@ -107,43 +93,35 @@ export function renderDevNew(root: HTMLElement): void {
   const packageNote = root.querySelector("#package-note")!;
   const packageSelect = root.querySelector<HTMLSelectElement>("#package")!;
 
+  const currentPack = () => PACKAGES.find((p) => p.id === packageSelect.value) ?? PACKAGES[0];
+
   const applyPackage = (id: string) => {
     const pack = PACKAGES.find((p) => p.id === id) ?? PACKAGES[0];
     (form.elements.namedItem("testers") as HTMLInputElement).value = String(pack.testers);
     (form.elements.namedItem("minutes") as HTMLInputElement).value = String(pack.minutes);
-    (form.elements.namedItem("reward") as HTMLInputElement).value = String(pack.reward);
-    (form.elements.namedItem("reportRate") as HTMLSelectElement).value = String(pack.reportRate);
     packageNote.textContent = pack.note;
     refreshQuote();
   };
 
   const refreshQuote = () => {
-    const testers = Number(new FormData(form).get("testers") || 0);
-    const reward = Number(new FormData(form).get("reward") || 0);
-    const rate = Number(new FormData(form).get("reportRate") || 0);
-    const q = estimateQuote(testers, reward, rate);
+    const pack = currentPack();
     quoteEl.innerHTML = `
-      <div>테스터 예산: ${formatKRW(q.testerBudget)}</div>
-      <div>영상 분석 레포트: ${formatKRW(q.reportFee)}</div>
-      <div class="total">합계: ${formatKRW(q.total)}</div>
+      <div>패키지: ${pack.label}</div>
+      <div>규모: ${pack.testers}명 · ${pack.minutes}분</div>
+      <div class="total">합계: ${formatKRW(pack.total)}</div>
     `;
   };
 
   packageSelect.addEventListener("change", () => applyPackage(packageSelect.value));
-  form.addEventListener("input", refreshQuote);
   refreshQuote();
 
   root.querySelector("#back")?.addEventListener("click", () => navigate({ name: "dev-home" }));
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const q = estimateQuote(
-      Number(new FormData(form).get("testers") || 0),
-      Number(new FormData(form).get("reward") || 0),
-      Number(new FormData(form).get("reportRate") || 0),
-    );
+    const pack = currentPack();
     sessionStorage.setItem(
       "playproof_last_quote",
-      JSON.stringify({ total: q.total, at: Date.now() }),
+      JSON.stringify({ total: pack.total, packageId: pack.id, at: Date.now() }),
     );
     navigate({ name: "dev-posting", id: "req_demo_new" });
   });

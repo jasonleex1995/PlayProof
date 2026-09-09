@@ -70,16 +70,15 @@ export function renderDevRequest(root: HTMLElement, id: string): void {
             <h3>모집 조건</h3>
             <p style="margin-top:0.5rem;"><strong>타겟</strong><br/>${req.targetAudience}</p>
             <p style="margin-top:0.7rem;"><strong>규모</strong><br/>${req.testerCount}명 · 인당 ${req.minutesPerTester}분</p>
-            <p style="margin-top:0.7rem;"><strong>인당 리워드</strong><br/>${formatKRW(req.rewardPerTester)}</p>
           </div>
           <div class="card">
             <h3>견적</h3>
             <div class="quote-box" style="margin-top:0.7rem;">
-              <div>테스터 예산: ${formatKRW(quote.testerBudget)}</div>
-              <div>레포트: ${formatKRW(quote.reportFee)}</div>
+              <div>규모: ${req.testerCount}명 · ${req.minutesPerTester}분</div>
               <div class="total">합계: ${formatKRW(quote.total)}</div>
             </div>
             ${req.packageLabel ? `<p class="help" style="margin-top:0.55rem;">${req.packageLabel}</p>` : ""}
+            <p class="help" style="margin-top:0.45rem;">테스터 리워드는 PlayProof 운영 비용으로 처리됩니다.</p>
           </div>
           <div class="card">
             <h3>진행 타임라인</h3>

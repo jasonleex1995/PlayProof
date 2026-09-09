@@ -42,8 +42,8 @@ export function renderDevPosting(root: HTMLElement, id: string): void {
         <div class="posting-meta">
           <div><strong>${req.testerCount}명</strong><span>모집 인원</span></div>
           <div><strong>${req.minutesPerTester}분</strong><span>인당 플레이</span></div>
-          <div><strong>${formatKRW(req.rewardPerTester)}</strong><span>인당 리워드</span></div>
-          <div><strong>${req.packageLabel ?? formatKRW(quote.total)}</strong><span>패키지/견적</span></div>
+          <div><strong>${req.packageLabel ?? formatKRW(quote.total)}</strong><span>패키지 견적</span></div>
+          <div><strong>일반인</strong><span>테스터 유형</span></div>
         </div>
       </div>
 

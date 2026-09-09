@@ -88,11 +88,10 @@ export function renderDevReport(root: HTMLElement, id: string): void {
             <div class="card">
               <h3>과금 내역</h3>
               <div class="quote-box" style="margin-top:0.7rem;">
-                <div>테스터: ${formatKRW(quote.testerBudget)}</div>
-                <div>분석 레포트: ${formatKRW(quote.reportFee)}</div>
+                <div>패키지: ${req.packageLabel ?? `${req.testerCount}명 · ${req.minutesPerTester}분`}</div>
                 <div class="total">${formatKRW(quote.total)}</div>
               </div>
-              <p class="help" style="margin-top:0.55rem;">발표 기준 스타터 패키지(20분·30명·15만)와 동일 구조입니다.</p>
+              <p class="help" style="margin-top:0.55rem;">스튜디오 청구는 패키지 합계 기준입니다. 테스터 정산은 별도 운영합니다.</p>
             </div>
             <div class="card">
               <h3>다음 액션</h3>

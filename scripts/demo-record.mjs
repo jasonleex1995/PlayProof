@@ -191,56 +191,33 @@ async function main() {
 
   await page.addInitScript({ content: OVERLAY_JS });
 
-  await page.goto("http://127.0.0.1:5173/PlayProof/#/", { waitUntil: "networkidle" });
+  await page.goto("http://127.0.0.1:5173/PlayProof/#/dev/new", { waitUntil: "networkidle" });
   await page.evaluate(() => {
     localStorage.clear();
     sessionStorage.clear();
   });
   await page.reload({ waitUntil: "networkidle" });
   await injectChrome(page);
-  await page.evaluate(() => window.scrollTo(0, 0));
   await moveTo(page, 240, 220, 8);
   await sleep(1000);
 
-  await section(page, "Section 1 · 홈", "Prove your Intent — PlayProof", 3400);
+  await section(page, "Section 1 · 의뢰 작성", "구간 · 기획 의도 · 패키지 견적", 3200);
   await page.evaluate(() => window.__ppBannerHide?.());
   await sleep(2200);
-
-  const intentY = await page.evaluate(() => document.getElementById("intent")?.offsetTop ?? 700);
-  await smoothScroll(page, Math.max(0, intentY - 50), 2000);
-  await section(page, "Section 1-2 · Why PlayProof?", "FGT · 전시 부스 · PlayProof 비교", 3600);
-  await page.evaluate(() => window.__ppBannerHide?.());
-  await sleep(2000);
-
-  const howY = await page.evaluate(() => document.getElementById("how")?.offsetTop ?? 1400);
-  await smoothScroll(page, Math.max(0, howY - 50), 2000);
-  await section(page, "Section 1-3 · How it Works", "의뢰 → 모집 → 수집 → 납품", 3400);
-  await page.evaluate(() => window.__ppBannerHide?.());
-  await sleep(1800);
-
-  await smoothScroll(page, 0, 1400);
-  await sleep(800);
-  await section(page, "Section 2 · 의뢰 작성", "구간 · 기획 의도 · 견적", 3000);
-  await page.evaluate(() => window.__ppBannerHide?.());
-  await sleep(700);
-  await clickLocator(page, page.locator('.m-hero-cta button:has-text("의뢰하기")').first(), 48);
-  await page.waitForURL(/#\/dev\/new/);
-  await injectChrome(page);
-  await sleep(2600);
   await page.locator("#quote").scrollIntoViewIfNeeded();
-  await sleep(2200);
-  await clickLocator(page, page.locator("#new-form button[type='submit']"), 44);
+  await sleep(2000);
+  await clickLocator(page, page.locator('#new-form button[type="submit"]'), 44);
 
   await page.waitForURL(/#\/dev\/posting/);
   await injectChrome(page);
-  await section(page, "Section 3 · 모집 공고", "일반인 테스터 대상으로 게시", 3600);
+  await section(page, "Section 2 · 모집 공고", "일반인 테스터 대상으로 게시", 3400);
   await page.evaluate(() => window.__ppBannerHide?.());
-  await sleep(2600);
+  await sleep(2400);
   await clickLocator(page, page.locator('a:has-text("테스터로 전환해 지원하기")'), 44);
   await sleep(1400);
 
   await injectChrome(page);
-  await section(page, "Section 4 · 테스터 지원", "지원 → 당선 → 영상·피드백 제출", 3400);
+  await section(page, "Section 3 · 테스터 지원", "지원 → 당선 → 영상·피드백 제출", 3200);
   await page.evaluate(() => window.__ppBannerHide?.());
   const skip = page.locator("#skip-demo");
   if (await skip.count()) {
@@ -279,22 +256,19 @@ async function main() {
     waitUntil: "networkidle",
   });
   await injectChrome(page);
-  await section(page, "Section 5 · 납품 패키지", "정량 + 정성 + 원본 영상", 3600);
+  await section(page, "Section 4 · 납품 패키지", "정량 + 정성 + 원본 영상", 3400);
   await page.evaluate(() => window.__ppBannerHide?.());
-  await sleep(2600);
+  await sleep(2400);
 
   await clickLocator(page, page.locator('.package-tabs button[data-tab="qual"]'), 36);
-  await sleep(2800);
-  await clickLocator(page, page.locator('.package-tabs button[data-tab="video"]'), 36);
-  await sleep(2800);
-  await clickLocator(page, page.locator('.package-tabs button[data-tab="quant"]'), 36);
   await sleep(2600);
+  await clickLocator(page, page.locator('.package-tabs button[data-tab="video"]'), 36);
+  await sleep(2600);
+  await clickLocator(page, page.locator('.package-tabs button[data-tab="quant"]'), 36);
+  await sleep(2400);
 
-  await page.goto("http://127.0.0.1:5173/PlayProof/#/", { waitUntil: "networkidle" });
-  await injectChrome(page);
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await section(page, "Prove your Intent!", "PlayProof Demo End", 3800);
-  await sleep(1500);
+  await section(page, "Prove your Intent!", "PlayProof Demo End", 3200);
+  await sleep(1200);
 
   console.log("DEMO_FLOW_DONE");
   process.exit(0);
