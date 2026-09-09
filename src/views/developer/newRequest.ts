@@ -61,9 +61,6 @@ export function renderDevNew(root: HTMLElement): void {
             <li>테스터 <strong>정성</strong> 피드백 · 개선점</li>
             <li>플레이 영상 <strong>원본</strong></li>
           </ul>
-          <p class="help" style="margin-top:0.9rem;">
-            테스터 리워드·정산은 PlayProof가 운영합니다. 스튜디오에는 패키지 합계만 청구됩니다.
-          </p>
         </aside>
       </div>
     `,
