@@ -104,10 +104,10 @@ export const currentUser = {
     email: "june@neonmoth.dev",
   },
   tester: {
-    name: "김하린",
+    name: "김민수",
     mileage: 18400,
     completed: 11,
-    email: "harin.plays@email.com",
+    email: "minsu.kim@email.com",
   },
 };
 

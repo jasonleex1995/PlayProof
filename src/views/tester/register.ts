@@ -10,12 +10,9 @@ export function renderTesterRegister(root: HTMLElement): void {
     body: `
       <div class="page-header">
         <div>
-          <div class="badge brand">테스터 등록 · Demo</div>
+          <div class="badge brand">테스터 등록</div>
           <h1 style="margin-top:0.45rem;">테스터 신청하기</h1>
-          <p>
-            의뢰 매칭에 필요한 프로필입니다. 백엔드 없이 UI만 동작하며,
-            제출 시 로컬에 저장해 미션 보드로 이동합니다.
-          </p>
+          <p>의뢰 매칭에 필요한 프로필을 남겨 주세요.</p>
         </div>
         <button class="btn btn-ghost" type="button" id="back-home">홈으로</button>
       </div>
@@ -27,11 +24,11 @@ export function renderTesterRegister(root: HTMLElement): void {
           <div class="grid-2" style="margin-top:0.85rem;">
             <div class="field">
               <label for="name">이름 / 닉네임 *</label>
-              <input id="name" name="name" required placeholder="예: 김하린" />
+              <input id="name" name="name" required value="김민수" />
             </div>
             <div class="field">
               <label for="email">연락용 이메일 *</label>
-              <input id="email" name="email" type="email" required placeholder="you@email.com" />
+              <input id="email" name="email" type="email" required value="minsu.kim@email.com" />
             </div>
             <div class="field">
               <label for="age">연령대 *</label>
@@ -49,7 +46,7 @@ export function renderTesterRegister(root: HTMLElement): void {
               <select id="gender" name="gender">
                 <option value="">선택 안 함</option>
                 <option>여성</option>
-                <option>남성</option>
+                <option selected>남성</option>
                 <option>기타 / 응답 거부</option>
               </select>
             </div>
@@ -67,7 +64,7 @@ export function renderTesterRegister(root: HTMLElement): void {
             <div class="field">
               <label for="timezone">주로 플레이하는 시간대</label>
               <select id="timezone" name="timezone">
-                <option>평일 저녁</option>
+                <option selected>평일 저녁</option>
                 <option>주말</option>
                 <option>심야</option>
                 <option>유동적</option>
@@ -89,7 +86,7 @@ export function renderTesterRegister(root: HTMLElement): void {
               name="favorites"
               required
               placeholder="예: 젤다의 전설, 스태디 2, 오버워치, 메이플스토리"
-            >엘든 링, 컵헤드, 원신</textarea>
+            >리그 오브 레전드 (롤)</textarea>
             <div class="help">쉼표나 줄바꿈으로 여러 개 적어도 됩니다. 장르를 몰라도 괜찮습니다.</div>
           </div>
           <div class="field">
@@ -98,7 +95,7 @@ export function renderTesterRegister(root: HTMLElement): void {
               id="played"
               name="played"
               placeholder="예: 최근에 클리어/중도 하차한 게임, 비슷한 장르로 해본 것"
-            ></textarea>
+            >롤만 해봤습니다. 다른 PC/콘솔 싱글 게임은 거의 안 해봤어요.</textarea>
             <div class="help">의뢰 게임과 결이 비슷한 경험이 있으면 매칭·검수에 도움이 됩니다.</div>
           </div>
           <div class="grid-2">
@@ -125,9 +122,11 @@ export function renderTesterRegister(root: HTMLElement): void {
             <label>플레이 가능 플랫폼 * (복수 선택)</label>
             <div class="chip-grid" role="group" aria-label="플레이 가능 플랫폼">
               ${PLATFORMS.map(
-                (p, i) => `
+                (p) => `
                 <label class="chip">
-                  <input type="checkbox" name="platforms" value="${p}" ${i === 0 ? "checked" : ""} />
+                  <input type="checkbox" name="platforms" value="${p}" ${
+                    p === "PC (Windows)" ? "checked" : ""
+                  } />
                   <span class="chip-text">${p}</span>
                 </label>`,
               ).join("")}
@@ -141,7 +140,7 @@ export function renderTesterRegister(root: HTMLElement): void {
           <div class="grid-2" style="margin-top:0.85rem;">
             <div class="field">
               <label for="os">주 사용 OS / 기기 *</label>
-              <input id="os" name="os" required placeholder="예: Windows 11, RTX 3060 / iPhone 15" />
+              <input id="os" name="os" required value="Windows 11, 노트북 (내장 그래픽)" />
             </div>
             <div class="field">
               <label for="record">화면 녹화 가능 여부 *</label>
@@ -153,7 +152,7 @@ export function renderTesterRegister(root: HTMLElement): void {
             </div>
             <div class="field">
               <label for="steam">Steam / 스토어 ID (선택)</label>
-              <input id="steam" name="steam" placeholder="라이브러리·경험 매칭용" />
+              <input id="steam" name="steam" value="없음 (롤만 플레이)" />
             </div>
             <div class="field">
               <label for="languages">사용 언어 *</label>
@@ -180,7 +179,7 @@ export function renderTesterRegister(root: HTMLElement): void {
 
         <div class="register-actions">
           <button class="btn btn-primary" type="submit">신청 완료하고 미션 보기</button>
-          <button class="btn btn-secondary" type="button" id="skip-demo">데모: 샘플 프로필로 건너뛰기</button>
+          <button class="btn btn-secondary" type="button" id="skip-demo">이 프로필로 바로 시작</button>
         </div>
       </form>
     `,
@@ -188,17 +187,33 @@ export function renderTesterRegister(root: HTMLElement): void {
 
   bindShellActions(root);
 
-  root.querySelector("#back-home")?.addEventListener("click", () => navigate({ name: "home" }));
-  root.querySelector("#skip-demo")?.addEventListener("click", () => {
+  const saveDefaultProfile = () => {
     localStorage.setItem(
       "playproof_tester",
       JSON.stringify({
-        name: "김하린",
-        favorites: "엘든 링, 컵헤드, 원신",
-        skipped: true,
+        name: "김민수",
+        email: "minsu.kim@email.com",
+        age: "20대",
+        gender: "남성",
+        region: "대한민국",
+        timezone: "평일 저녁",
+        favorites: "리그 오브 레전드 (롤)",
+        played: "롤만 해봤습니다. 다른 PC/콘솔 싱글 게임은 거의 안 해봤어요.",
+        level: "코어 (주 3–10시간)",
+        years: "3–7년",
+        platforms: ["PC (Windows)"],
+        os: "Windows 11, 노트북 (내장 그래픽)",
+        record: "가능 (권장)",
+        steam: "없음 (롤만 플레이)",
+        languages: "한국어",
         savedAt: new Date().toISOString(),
       }),
     );
+  };
+
+  root.querySelector("#back-home")?.addEventListener("click", () => navigate({ name: "home" }));
+  root.querySelector("#skip-demo")?.addEventListener("click", () => {
+    saveDefaultProfile();
     navigate({ name: "tester-home" });
   });
 
@@ -236,7 +251,7 @@ export function renderTesterRegister(root: HTMLElement): void {
       savedAt: new Date().toISOString(),
     };
     localStorage.setItem("playproof_tester", JSON.stringify(profile));
-    alert(`테스터 신청이 접수되었습니다.\n\n${profile.name}님, 미션 보드로 이동합니다. (데모 · 서버 전송 없음)`);
+    alert(`테스터 신청이 접수되었습니다.\n\n${profile.name}님, 미션 보드로 이동합니다.`);
     navigate({ name: "tester-home" });
   });
 }
