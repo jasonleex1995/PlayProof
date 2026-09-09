@@ -80,7 +80,7 @@ export function renderHome(root: HTMLElement): void {
               <tbody>
                 <tr>
                   <th scope="row">일반인 테스터</th>
-                  <td><span class="ox no">X</span><small>숙련 패널 편향</small></td>
+                  <td><span class="ox no">X</span></td>
                   <td><span class="ox yes">O</span></td>
                   <td><span class="ox yes">O</span></td>
                 </tr>
@@ -92,8 +92,8 @@ export function renderHome(root: HTMLElement): void {
                 </tr>
                 <tr>
                   <th scope="row">기획 의도 정량 검증</th>
-                  <td><span class="ox no">X</span><small>정성 중심</small></td>
-                  <td><span class="ox no">X</span><small>수기·정성</small></td>
+                  <td><span class="ox no">X</span></td>
+                  <td><span class="ox no">X</span></td>
                   <td><span class="ox yes">O</span></td>
                 </tr>
                 <tr>
@@ -106,7 +106,7 @@ export function renderHome(root: HTMLElement): void {
                   <th scope="row">인디가 감당 가능한 단가</th>
                   <td><span class="ox no">X</span><small>약 250만 원/건</small></td>
                   <td><span class="ox no">X</span><small>약 200만 원/박</small></td>
-                  <td><span class="ox yes">O</span><small>약 15만 원~</small></td>
+                  <td><span class="ox yes">O</span><small>약 15만 ~ 75만 원</small></td>
                 </tr>
               </tbody>
             </table>
