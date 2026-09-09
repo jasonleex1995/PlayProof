@@ -1,19 +1,6 @@
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
-const GENRES = [
-  "액션",
-  "소울라이크",
-  "RPG",
-  "슈팅",
-  "퍼즐",
-  "캐주얼",
-  "전략",
-  "시뮬레이션",
-  "호러",
-  "스포츠",
-] as const;
-
 const PLATFORMS = ["PC (Windows)", "PC (Mac)", "모바일 (iOS)", "모바일 (Android)", "콘솔"] as const;
 
 export function renderTesterRegister(root: HTMLElement): void {
@@ -91,18 +78,28 @@ export function renderTesterRegister(root: HTMLElement): void {
 
         <div class="register-section">
           <h3>플레이 프로필</h3>
-          <p class="help">장르·숙련도로 “타겟 유저”에 가까운 테스터를 고릅니다.</p>
+          <p class="help">
+            일반 플레이어는 장르보다 “어떤 게임을 해봤는지”가 매칭에 더 잘 맞습니다.
+            좋아하는 게임·플레이해 본 게임을 자유롭게 적어 주세요.
+          </p>
           <div class="field" style="margin-top:0.85rem;">
-            <label>선호 장르 * (복수 선택)</label>
-            <div class="chip-grid" id="genres">
-              ${GENRES.map(
-                (g, i) => `
-                <label class="chip">
-                  <input type="checkbox" name="genres" value="${g}" ${i < 3 ? "checked" : ""} />
-                  <span>${g}</span>
-                </label>`,
-              ).join("")}
-            </div>
+            <label for="favorites">좋아하는 게임 *</label>
+            <textarea
+              id="favorites"
+              name="favorites"
+              required
+              placeholder="예: 젤다의 전설, 스태디 2, 오버워치, 메이플스토리"
+            >엘든 링, 컵헤드, 원신</textarea>
+            <div class="help">쉼표나 줄바꿈으로 여러 개 적어도 됩니다. 장르를 몰라도 괜찮습니다.</div>
+          </div>
+          <div class="field">
+            <label for="played">플레이해 본 게임 (선택)</label>
+            <textarea
+              id="played"
+              name="played"
+              placeholder="예: 최근에 클리어/중도 하차한 게임, 비슷한 장르로 해본 것"
+            ></textarea>
+            <div class="help">의뢰 게임과 결이 비슷한 경험이 있으면 매칭·검수에 도움이 됩니다.</div>
           </div>
           <div class="grid-2">
             <div class="field">
@@ -111,7 +108,7 @@ export function renderTesterRegister(root: HTMLElement): void {
                 <option>캐주얼 (주 3시간 미만)</option>
                 <option selected>코어 (주 3–10시간)</option>
                 <option>하드코어 (주 10시간+)</option>
-                <option>특정 장르 고수</option>
+                <option>특정 게임/장르 고수</option>
               </select>
             </div>
             <div class="field">
@@ -126,12 +123,12 @@ export function renderTesterRegister(root: HTMLElement): void {
           </div>
           <div class="field">
             <label>플레이 가능 플랫폼 * (복수 선택)</label>
-            <div class="chip-grid">
+            <div class="chip-grid" role="group" aria-label="플레이 가능 플랫폼">
               ${PLATFORMS.map(
                 (p, i) => `
                 <label class="chip">
                   <input type="checkbox" name="platforms" value="${p}" ${i === 0 ? "checked" : ""} />
-                  <span>${p}</span>
+                  <span class="chip-text">${p}</span>
                 </label>`,
               ).join("")}
             </div>
@@ -156,7 +153,7 @@ export function renderTesterRegister(root: HTMLElement): void {
             </div>
             <div class="field">
               <label for="steam">Steam / 스토어 ID (선택)</label>
-              <input id="steam" name="steam" placeholder="장르 경험 매칭용" />
+              <input id="steam" name="steam" placeholder="라이브러리·경험 매칭용" />
             </div>
             <div class="field">
               <label for="languages">사용 언어 *</label>
@@ -189,7 +186,6 @@ export function renderTesterRegister(root: HTMLElement): void {
     `,
   });
 
-  // Soften shell "tester" chrome on registration: still ok
   bindShellActions(root);
 
   root.querySelector("#back-home")?.addEventListener("click", () => navigate({ name: "home" }));
@@ -198,6 +194,7 @@ export function renderTesterRegister(root: HTMLElement): void {
       "playproof_tester",
       JSON.stringify({
         name: "김하린",
+        favorites: "엘든 링, 컵헤드, 원신",
         skipped: true,
         savedAt: new Date().toISOString(),
       }),
@@ -209,10 +206,11 @@ export function renderTesterRegister(root: HTMLElement): void {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const data = new FormData(form);
-    const genres = data.getAll("genres");
+    const favorites = String(data.get("favorites") || "").trim();
+    const played = String(data.get("played") || "").trim();
     const platforms = data.getAll("platforms");
-    if (genres.length === 0) {
-      alert("선호 장르를 하나 이상 선택해 주세요.");
+    if (!favorites) {
+      alert("좋아하는 게임을 하나 이상 적어 주세요.");
       return;
     }
     if (platforms.length === 0) {
@@ -226,7 +224,8 @@ export function renderTesterRegister(root: HTMLElement): void {
       gender: String(data.get("gender") || ""),
       region: String(data.get("region") || ""),
       timezone: String(data.get("timezone") || ""),
-      genres,
+      favorites,
+      played,
       level: String(data.get("level") || ""),
       years: String(data.get("years") || ""),
       platforms,
