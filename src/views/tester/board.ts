@@ -1,4 +1,12 @@
-import { formatKRW, missions, submissions, currentUser } from "../../data/mock";
+import {
+  applyStatusLabel,
+  formatKRW,
+  getMissionApplyStatus,
+  missions,
+  submissions,
+  currentUser,
+  type MissionApplyStatus,
+} from "../../data/mock";
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
@@ -13,25 +21,36 @@ function savedTesterName(): string {
   }
 }
 
+function statusBadge(status: MissionApplyStatus): string {
+  if (status === "selected") return `<span class="badge ok">${applyStatusLabel(status)}</span>`;
+  if (status === "applied") return `<span class="badge warn">${applyStatusLabel(status)}</span>`;
+  if (status === "submitted") return `<span class="badge brand">${applyStatusLabel(status)}</span>`;
+  return `<span class="badge">${applyStatusLabel(status)}</span>`;
+}
+
 export function renderTesterHome(root: HTMLElement): void {
   const name = savedTesterName();
   const cards = missions
-    .map(
-      (m) => `
+    .map((m) => {
+      const status = getMissionApplyStatus(m.id);
+      return `
       <article class="card" style="cursor:pointer;" data-id="${m.id}">
         <div style="display:flex;justify-content:space-between;gap:0.5rem;align-items:start;">
           <div>
             <div class="badge brand">${m.gameTitle}</div>
             <h3 style="margin-top:0.45rem;">${m.title}</h3>
           </div>
-          <strong class="mono">${formatKRW(m.reward)}</strong>
+          <div style="text-align:right;">
+            <strong class="mono">${formatKRW(m.reward)}</strong>
+            <div style="margin-top:0.35rem;">${statusBadge(status)}</div>
+          </div>
         </div>
         <p style="margin-top:0.45rem;">${m.segment} · ${m.minutes}분 · 잔여 ${m.slotsLeft}석</p>
         <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.7rem;">
           ${m.tags.map((t) => `<span class="badge">${t}</span>`).join("")}
         </div>
-      </article>`,
-    )
+      </article>`;
+    })
     .join("");
 
   root.innerHTML = shell({
@@ -41,7 +60,7 @@ export function renderTesterHome(root: HTMLElement): void {
       <div class="page-header">
         <div>
           <h1>미션 보드</h1>
-          <p>${name}님, 모집 중인 구간 테스트에 참여하고 플레이 영상을 제출하세요.</p>
+          <p>${name}님, 모집 공고에 지원하고 당선되면 영상·피드백을 제출하세요.</p>
         </div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           <a class="btn btn-secondary" href="#/tester/register">프로필 / 재신청</a>

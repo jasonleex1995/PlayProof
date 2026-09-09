@@ -9,6 +9,7 @@ export function renderDevRequest(root: HTMLElement, id: string): void {
     return;
   }
   const quote = estimateQuote(req.testerCount, req.rewardPerTester, req.reportFeeRate);
+  const showPosting = req.status === "recruiting" || req.status === "in_progress";
 
   root.innerHTML = shell({
     role: "developer",
@@ -22,8 +23,13 @@ export function renderDevRequest(root: HTMLElement, id: string): void {
         </div>
         <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
           ${
+            showPosting
+              ? `<a class="btn btn-secondary" href="#/dev/posting/${req.id}">모집 공고 보기</a>`
+              : ""
+          }
+          ${
             req.status === "delivered" || req.status === "analyzing"
-              ? `<a class="btn btn-primary" href="#/dev/report/${req.id}">레포트 보기</a>`
+              ? `<a class="btn btn-primary" href="#/dev/report/${req.id}">납품 패키지 보기</a>`
               : ""
           }
           <button class="btn btn-secondary" type="button" id="back">목록</button>
@@ -73,10 +79,16 @@ export function renderDevRequest(root: HTMLElement, id: string): void {
               <div>레포트: ${formatKRW(quote.reportFee)}</div>
               <div class="total">합계: ${formatKRW(quote.total)}</div>
             </div>
+            ${req.packageLabel ? `<p class="help" style="margin-top:0.55rem;">${req.packageLabel}</p>` : ""}
           </div>
           <div class="card">
             <h3>진행 타임라인</h3>
-            <p style="margin-top:0.5rem;">1) 모집 공고 → 2) 영상 수집 → 3) 검수·정량 분석 → 4) 납품</p>
+            <ol class="demo-steps" style="margin-top:0.55rem;">
+              <li class="done">의뢰 접수</li>
+              <li class="${req.status !== "draft" ? "done" : ""}">모집 공고</li>
+              <li class="${["in_progress", "analyzing", "delivered"].includes(req.status) ? "done" : ""}">영상·정성 수집</li>
+              <li class="${req.status === "delivered" ? "done" : ""}">정량·정성·원본 납품</li>
+            </ol>
             <p class="help" style="margin-top:0.55rem;">현재 단계: <strong>${statusLabel(req.status)}</strong></p>
           </div>
         </aside>

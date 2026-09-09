@@ -3,6 +3,7 @@ export type Route =
   | { name: "dev-home" }
   | { name: "dev-new" }
   | { name: "dev-request"; id: string }
+  | { name: "dev-posting"; id: string }
   | { name: "dev-report"; id: string }
   | { name: "tester-register" }
   | { name: "tester-home" }
@@ -21,6 +22,7 @@ function parseHash(hash: string): Route {
   if (a === "dev" && !b) return { name: "dev-home" };
   if (a === "dev" && b === "new") return { name: "dev-new" };
   if (a === "dev" && b === "request" && c) return { name: "dev-request", id: c };
+  if (a === "dev" && b === "posting" && c) return { name: "dev-posting", id: c };
   if (a === "dev" && b === "report" && c) return { name: "dev-report", id: c };
   if (a === "tester" && b === "register") return { name: "tester-register" };
   if (a === "tester" && !b) return { name: "tester-home" };
@@ -39,6 +41,8 @@ export function routeToHash(route: Route): string {
       return "#/dev/new";
     case "dev-request":
       return `#/dev/request/${route.id}`;
+    case "dev-posting":
+      return `#/dev/posting/${route.id}`;
     case "dev-report":
       return `#/dev/report/${route.id}`;
     case "tester-register":

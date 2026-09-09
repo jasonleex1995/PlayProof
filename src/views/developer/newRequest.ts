@@ -1,8 +1,10 @@
-import { estimateQuote, formatKRW } from "../../data/mock";
+import { estimateQuote, formatKRW, PACKAGES } from "../../data/mock";
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
 export function renderDevNew(root: HTMLElement): void {
+  const starter = PACKAGES[0];
+
   root.innerHTML = shell({
     role: "developer",
     active: "new",
@@ -10,11 +12,21 @@ export function renderDevNew(root: HTMLElement): void {
       <div class="page-header">
         <div>
           <h1>새 의뢰</h1>
-          <p>테스트할 구간과 기획 의도(가설)를 적으면 견적이 계산됩니다.</p>
+          <p>테스트할 구간과 기획 의도(가설)를 적으면 견적이 계산되고, 모집 공고로 이어집니다.</p>
         </div>
       </div>
       <div class="split">
         <form class="card form" id="new-form">
+          <div class="field">
+            <label for="package">패키지 (발표 요금 기준)</label>
+            <select id="package" name="package">
+              ${PACKAGES.map(
+                (p, i) =>
+                  `<option value="${p.id}" ${i === 0 ? "selected" : ""}>${p.label} · ${formatKRW(p.total)}</option>`,
+              ).join("")}
+            </select>
+            <div class="help" id="package-note">${starter.note}</div>
+          </div>
           <div class="field">
             <label for="game">게임 타이틀</label>
             <input id="game" name="game" value="Ash Circuit" required />
@@ -25,12 +37,13 @@ export function renderDevNew(root: HTMLElement): void {
           </div>
           <div class="field">
             <label for="segment">테스트 구간</label>
-            <input id="segment" name="segment" value="Chapter 2 Boss (15분 캡)" required />
+            <input id="segment" name="segment" value="Chapter 2 Boss (20분 캡)" required />
             <div class="help">전체 게임이 아니라 검증하고 싶은 핵심 구간만 지정하세요.</div>
           </div>
           <div class="field">
             <label for="audience">타겟 유저</label>
-            <input id="audience" name="audience" value="20–30대 남성 · 액션 경험자" required />
+            <input id="audience" name="audience" value="20–30대 · 액션 경험 있는 일반 플레이어" required />
+            <div class="help">숙련 FGT 패널이 아니라, 기획이 겨냥한 일반 유저에 가깝게 모집합니다.</div>
           </div>
           <div class="field">
             <label for="intent">기획 의도 / 가설</label>
@@ -39,39 +52,45 @@ export function renderDevNew(root: HTMLElement): void {
           <div class="grid-2">
             <div class="field">
               <label for="testers">테스터 수</label>
-              <input id="testers" name="testers" type="number" min="5" max="200" value="30" />
+              <input id="testers" name="testers" type="number" min="5" max="200" value="${starter.testers}" />
             </div>
             <div class="field">
               <label for="minutes">인당 시간(분)</label>
-              <input id="minutes" name="minutes" type="number" min="5" max="60" value="15" />
+              <input id="minutes" name="minutes" type="number" min="5" max="120" value="${starter.minutes}" />
             </div>
             <div class="field">
               <label for="reward">인당 리워드(원)</label>
-              <input id="reward" name="reward" type="number" min="1000" step="100" value="3000" />
+              <input id="reward" name="reward" type="number" min="1000" step="100" value="${starter.reward}" />
             </div>
             <div class="field">
               <label for="reportRate">레포트 요율</label>
               <select id="reportRate" name="reportRate">
-                <option value="0.1" selected>테스트비의 10%</option>
+                <option value="0.25" selected>스타터 패키지 포함 (~25%)</option>
+                <option value="0.153846">스탠다드 패키지 포함 (~15.4%)</option>
+                <option value="0.1">테스트비의 10%</option>
                 <option value="0.15">테스트비의 15%</option>
-                <option value="0">레포트 없이 영상만</option>
+                <option value="0">레포트 없이 영상·정성만</option>
               </select>
             </div>
           </div>
           <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-            <button class="btn btn-primary" type="submit">데모: 의뢰 접수 시뮬레이션</button>
+            <button class="btn btn-primary" type="submit">데모: 의뢰 접수 → 모집 공고</button>
             <button class="btn btn-secondary" type="button" id="back">취소</button>
           </div>
         </form>
         <aside class="stack">
           <div class="card">
             <h3>견적 미리보기</h3>
-            <p class="help" style="margin-bottom:0.8rem;">테스터 리워드 + 정량 레포트 요금</p>
+            <p class="help" style="margin-bottom:0.8rem;">테스터 리워드 + 정량 레포트 (정성·원본 영상 포함 납품)</p>
             <div class="quote-box" id="quote">
               <div>테스터 예산: —</div>
               <div>영상 분석 레포트: —</div>
               <div class="total">합계: —</div>
             </div>
+          </div>
+          <div class="card">
+            <h3>납품 패키지</h3>
+            <p>① 의도 대비 <strong>정량</strong> 레포트<br/>② 테스터 <strong>정성</strong> 피드백·개선점<br/>③ 플레이 영상 <strong>원본</strong></p>
           </div>
           <div class="card">
             <h3>측정 예시 지표</h3>
@@ -85,6 +104,18 @@ export function renderDevNew(root: HTMLElement): void {
   bindShellActions(root);
   const form = root.querySelector<HTMLFormElement>("#new-form")!;
   const quoteEl = root.querySelector("#quote")!;
+  const packageNote = root.querySelector("#package-note")!;
+  const packageSelect = root.querySelector<HTMLSelectElement>("#package")!;
+
+  const applyPackage = (id: string) => {
+    const pack = PACKAGES.find((p) => p.id === id) ?? PACKAGES[0];
+    (form.elements.namedItem("testers") as HTMLInputElement).value = String(pack.testers);
+    (form.elements.namedItem("minutes") as HTMLInputElement).value = String(pack.minutes);
+    (form.elements.namedItem("reward") as HTMLInputElement).value = String(pack.reward);
+    (form.elements.namedItem("reportRate") as HTMLSelectElement).value = String(pack.reportRate);
+    packageNote.textContent = pack.note;
+    refreshQuote();
+  };
 
   const refreshQuote = () => {
     const testers = Number(new FormData(form).get("testers") || 0);
@@ -97,6 +128,8 @@ export function renderDevNew(root: HTMLElement): void {
       <div class="total">합계: ${formatKRW(q.total)}</div>
     `;
   };
+
+  packageSelect.addEventListener("change", () => applyPackage(packageSelect.value));
   form.addEventListener("input", refreshQuote);
   refreshQuote();
 
@@ -108,9 +141,10 @@ export function renderDevNew(root: HTMLElement): void {
       Number(new FormData(form).get("reward") || 0),
       Number(new FormData(form).get("reportRate") || 0),
     );
-    alert(
-      `데모 접수 완료\n\n합계 ${formatKRW(q.total)}\n실제 환경에서는 결제 후 모집 공고가 게시됩니다.`,
+    sessionStorage.setItem(
+      "playproof_last_quote",
+      JSON.stringify({ total: q.total, at: Date.now() }),
     );
-    navigate({ name: "dev-home" });
+    navigate({ name: "dev-posting", id: "req_demo_new" });
   });
 }
