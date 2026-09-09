@@ -15,7 +15,7 @@ export function renderDevNew(root: HTMLElement): void {
           <p>기획 의도(가설)와 패키지를 선택하면 견적이 나오고, 접수 후 모집으로 이어집니다.</p>
         </div>
       </div>
-      <div class="split request-layout">
+      <div class="split request-layout" id="request-main">
         <form class="card form" id="new-form">
           <div class="field">
             <label for="package">패키지</label>
@@ -92,10 +92,43 @@ export function renderDevNew(root: HTMLElement): void {
   root.querySelector("#new-form")?.addEventListener("submit", (e) => {
     e.preventDefault();
     const pack = currentPack();
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const title = String(data.get("title") || "");
+    const game = String(data.get("game") || "");
     sessionStorage.setItem(
       "playproof_last_quote",
-      JSON.stringify({ total: pack.total, packageId: pack.id, at: Date.now() }),
+      JSON.stringify({ total: pack.total, packageId: pack.id, title, game, at: Date.now() }),
     );
-    navigate({ name: "dev-posting", id: "req_demo_new" });
+
+    const main = root.querySelector("#request-main");
+    if (!main) return;
+    main.innerHTML = `
+      <div class="card request-success">
+        <div class="badge ok">접수 완료</div>
+        <h2>의뢰가 접수되었습니다!</h2>
+        <p>
+          <strong>${game}</strong> · ${title}<br />
+          패키지 합계 <strong>${formatKRW(pack.total)}</strong>
+        </p>
+        <p class="help" style="margin-top:0.85rem;">
+          PlayProof가 일반인 테스터 모집 공고를 게시합니다. 데모에서는 바로 공고를 확인할 수 있습니다.
+        </p>
+        <div class="request-actions" style="margin-top:1.25rem;">
+          <button class="btn btn-primary" type="button" id="go-postings">모집 공고 보기</button>
+          <button class="btn btn-secondary" type="button" id="go-posting-detail">이번 공고 상세</button>
+          <button class="btn btn-ghost" type="button" id="go-dashboard">의뢰 대시보드</button>
+        </div>
+      </div>
+    `;
+    root.querySelector("#go-postings")?.addEventListener("click", () =>
+      navigate({ name: "postings" }),
+    );
+    root.querySelector("#go-posting-detail")?.addEventListener("click", () =>
+      navigate({ name: "dev-posting", id: "req_demo_new" }),
+    );
+    root.querySelector("#go-dashboard")?.addEventListener("click", () =>
+      navigate({ name: "dev-home" }),
+    );
   });
 }

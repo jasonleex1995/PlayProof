@@ -10,6 +10,7 @@ import { renderTesterRegister } from "./views/tester/register";
 import { renderTesterHome } from "./views/tester/board";
 import { renderTesterMission } from "./views/tester/mission";
 import { renderTesterRewards } from "./views/tester/rewards";
+import { renderPostings } from "./views/postings";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) throw new Error("#app missing");
@@ -19,6 +20,9 @@ function render(route: Route): void {
   switch (route.name) {
     case "home":
       renderHome(root);
+      break;
+    case "postings":
+      renderPostings(root);
       break;
     case "dev-home":
       renderDevHome(root);

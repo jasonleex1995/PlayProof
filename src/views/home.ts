@@ -12,6 +12,7 @@ export function renderHome(root: HTMLElement): void {
           <nav class="m-nav-links" aria-label="Primary">
             <button type="button" data-scroll="intent">의도 검증</button>
             <button type="button" data-scroll="how">이용 방법</button>
+            <button type="button" data-go="postings">모집 공고</button>
             <button type="button" data-scroll="report">레포트</button>
           </nav>
           <div class="m-nav-actions">
@@ -222,6 +223,7 @@ export function renderHome(root: HTMLElement): void {
   const goRequest = () => navigate({ name: "dev-new" });
   const goTester = () => navigate({ name: "tester-register" });
   const goReport = () => navigate({ name: "dev-report", id: "req_boss_01" });
+  const goPostings = () => navigate({ name: "postings" });
 
   root.querySelectorAll<HTMLElement>("[data-go]").forEach((el) => {
     el.addEventListener("click", () => {
@@ -229,6 +231,7 @@ export function renderHome(root: HTMLElement): void {
       if (target === "request") goRequest();
       else if (target === "tester") goTester();
       else if (target === "sample-report") goReport();
+      else if (target === "postings") goPostings();
     });
   });
 

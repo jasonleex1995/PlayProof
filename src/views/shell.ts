@@ -15,6 +15,7 @@ export function shell(opts: {
       `
       : `
         <a href="#/tester" class="${opts.active === "home" ? "active" : ""}">미션 보드</a>
+        <a href="#/postings" class="">모집 공고</a>
         <a href="#/tester/rewards" class="${opts.active === "rewards" ? "active" : ""}">리워드</a>
       `;
 

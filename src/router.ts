@@ -1,5 +1,6 @@
 export type Route =
   | { name: "home" }
+  | { name: "postings" }
   | { name: "dev-home" }
   | { name: "dev-new" }
   | { name: "dev-request"; id: string }
@@ -19,6 +20,7 @@ function parseHash(hash: string): Route {
   const raw = hash.replace(/^#\/?/, "");
   const [a, b, c] = raw.split("/");
   if (!a || a === "home" || a === "login") return { name: "home" };
+  if (a === "postings") return { name: "postings" };
   if (a === "dev" && !b) return { name: "dev-home" };
   if (a === "dev" && b === "new") return { name: "dev-new" };
   if (a === "dev" && b === "request" && c) return { name: "dev-request", id: c };
@@ -35,6 +37,8 @@ export function routeToHash(route: Route): string {
   switch (route.name) {
     case "home":
       return "#/";
+    case "postings":
+      return "#/postings";
     case "dev-home":
       return "#/dev";
     case "dev-new":

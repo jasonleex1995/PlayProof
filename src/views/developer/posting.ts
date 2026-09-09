@@ -71,8 +71,11 @@ export function renderDevPosting(root: HTMLElement, id: string): void {
               <li><strong>당선</strong> 후 플레이 영상 + 개선점 제출</li>
               <li>정량 레포트 · 정성 · 원본 영상 납품</li>
             </ol>
-            <a class="btn btn-primary" href="#/tester" style="margin-top:0.9rem;display:inline-flex;">
-              테스터로 전환해 지원하기
+            <a class="btn btn-primary" href="#/postings" style="margin-top:0.9rem;display:inline-flex;">
+              모집 공고 보드 보기
+            </a>
+            <a class="btn btn-secondary" href="#/tester" style="margin-top:0.55rem;display:inline-flex;">
+              테스터 미션으로 지원
             </a>
           </div>
           <div class="card">
