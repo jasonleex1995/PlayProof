@@ -130,6 +130,33 @@ a { color: inherit; text-decoration: none; }
   background: #f5f5f7;
   color: var(--muted);
 }
+
+.request-layout {
+  align-items: start;
+}
+.request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.request-summary {
+  position: sticky;
+  top: 4.5rem;
+}
+.request-summary-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 1.1rem 0;
+}
+.request-deliverables {
+  margin: 0.55rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  display: grid;
+  gap: 0.35rem;
+}
+.request-deliverables strong { color: var(--ink); }
 .help { color: var(--muted); font-size: 0.84rem; }
 .quote-box {
   padding: 1.05rem 1.1rem; border-radius: 18px; background: #1d1d1f; color: #f5f5f7;

@@ -83,7 +83,7 @@ export const PACKAGES = [
     reward: 4000,
     reportRate: 0.25,
     total: 150_000,
-    note: "20분 · 30명 · 합계 약 15만 원 (정량·정성·원본 포함)",
+    note: "정량 레포트 · 정성 피드백 · 원본 영상 포함",
   },
   {
     id: "standard",
@@ -93,7 +93,7 @@ export const PACKAGES = [
     reward: 13_000,
     reportRate: 0.153846,
     total: 750_000,
-    note: "60분 · 50명 · 합계 약 75만 원 (정량·정성·원본 포함)",
+    note: "정량 레포트 · 정성 피드백 · 원본 영상 포함",
   },
 ] as const;
 
