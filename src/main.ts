@@ -5,6 +5,7 @@ import { renderDevHome } from "./views/developer/dashboard";
 import { renderDevNew } from "./views/developer/newRequest";
 import { renderDevRequest } from "./views/developer/requestDetail";
 import { renderDevReport } from "./views/developer/report";
+import { renderTesterRegister } from "./views/tester/register";
 import { renderTesterHome } from "./views/tester/board";
 import { renderTesterMission } from "./views/tester/mission";
 import { renderTesterRewards } from "./views/tester/rewards";
@@ -29,6 +30,9 @@ function render(route: Route): void {
       break;
     case "dev-report":
       renderDevReport(root, route.id);
+      break;
+    case "tester-register":
+      renderTesterRegister(root);
       break;
     case "tester-home":
       renderTesterHome(root);

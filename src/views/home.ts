@@ -164,7 +164,7 @@ export function renderHome(root: HTMLElement): void {
   `;
 
   const goRequest = () => navigate({ name: "dev-new" });
-  const goTester = () => navigate({ name: "tester-home" });
+  const goTester = () => navigate({ name: "tester-register" });
   const goReport = () => navigate({ name: "dev-report", id: "req_boss_01" });
 
   root.querySelectorAll<HTMLElement>("[data-go]").forEach((el) => {

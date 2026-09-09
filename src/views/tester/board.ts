@@ -1,8 +1,20 @@
-import { formatKRW, missions, submissions } from "../../data/mock";
+import { formatKRW, missions, submissions, currentUser } from "../../data/mock";
 import { bindShellActions, shell } from "../shell";
 import { navigate } from "../../router";
 
+function savedTesterName(): string {
+  try {
+    const raw = localStorage.getItem("playproof_tester");
+    if (!raw) return currentUser.tester.name;
+    const parsed = JSON.parse(raw) as { name?: string };
+    return parsed.name || currentUser.tester.name;
+  } catch {
+    return currentUser.tester.name;
+  }
+}
+
 export function renderTesterHome(root: HTMLElement): void {
+  const name = savedTesterName();
   const cards = missions
     .map(
       (m) => `
@@ -29,9 +41,12 @@ export function renderTesterHome(root: HTMLElement): void {
       <div class="page-header">
         <div>
           <h1>미션 보드</h1>
-          <p>모집 중인 구간 테스트에 참여하고 플레이 영상을 제출하세요.</p>
+          <p>${name}님, 모집 중인 구간 테스트에 참여하고 플레이 영상을 제출하세요.</p>
         </div>
-        <a class="btn btn-secondary" href="#/tester/rewards">내 리워드</a>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <a class="btn btn-secondary" href="#/tester/register">프로필 / 재신청</a>
+          <a class="btn btn-secondary" href="#/tester/rewards">내 리워드</a>
+        </div>
       </div>
       <div class="grid-2">${cards}</div>
       <div class="card" style="margin-top:1rem;">
