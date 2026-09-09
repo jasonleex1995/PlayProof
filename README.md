@@ -1,42 +1,34 @@
 # PlayProof
 
-게임 기반 휴먼 인증(Human Verification) 서비스 **데모 페이지**.
+**Prove the intent. / 기획 의도를 증명하라.**
 
-CAPTCHA 대신 짧은 미니게임(Bubble Pop)을 플레이하면서 포인터 행동 텔레메트리
-(속도 · 가속도 · jerk · 경로 효율 · jitter)를 분석해 사람다움을 점수화합니다.
+인디·소규모 팀을 위한 **게임 기획 유닛 테스트** 플랫폼.
 
-데모: https://jasonleex1995.github.io/PlayProof/
+핵심 구간을 타겟 유저에게 플레이하게 하고, 기획 의도 달성 여부를 **정량 레포트 + 원본 영상**으로 납품합니다.
 
-> 이 저장소의 스코어링은 **브라우저 휴리스틱 데모**입니다. 프로덕션 PlayProof는
-> 서버 ML 파이프라인·서명 토큰 검증과 결합됩니다.
+- 서비스 정의·시장·비전: [docs/SERVICE.md](docs/SERVICE.md)
+- 운영 워크스페이스 데모: https://jasonleex1995.github.io/PlayProof/
 
-## 기능
+> 이 저장소의 웹앱은 **소개 랜딩이 아니라**, 의뢰자/테스터가 쓰는 **운영 화면 데모**입니다.
 
-- 랜딩 / 기능 소개 / 동작 방식 / SDK 스니펫
-- 인터랙티브 Bubble Pop 검증 데모
-- 실시간 텔레메트리 패널 + speed sparkline
-- Human / Suspicious / Inconclusive 판정 UI
+## 데모에서 할 수 있는 것
+
+1. **의뢰자(개발 스튜디오)**  
+   대시보드 → 새 의뢰(견적) → 의뢰 상세 → 정량 레포트(보스 패턴 예시)
+2. **테스터**  
+   미션 보드 → 미션 상세·영상 제출 시뮬레이션 → 리워드/마일리지
+
+결제는 연결되지 않습니다. UI·플로우 데모입니다.
 
 ## 개발
 
 ```bash
 npm install
 npm run dev        # http://localhost:5173/PlayProof/
-npm run build      # dist/
+npm run build
 npm run typecheck
 ```
 
 ## 배포
 
-`main`에 푸시하면 `.github/workflows/deploy.yml`이 GitHub Pages로 배포합니다.
-저장소 Settings → Pages → Source를 **GitHub Actions**로 한 번 설정하세요.
-
-## 구조
-
-```
-src/
-  main.ts              페이지 셸 + 데모 바인딩
-  style.css            다크 테마 UI
-  telemetry.ts         행동 신호 추출 / 휴리스틱 스코어
-  demo/bubbleDemo.ts   Canvas Bubble Pop 미니게임
-```
+`main` 푸시 시 GitHub Pages (`Settings → Pages → Source: GitHub Actions`).
