@@ -1,5 +1,5 @@
 export type Route =
-  | { name: "login" }
+  | { name: "home" }
   | { name: "dev-home" }
   | { name: "dev-new" }
   | { name: "dev-request"; id: string }
@@ -10,13 +10,13 @@ export type Route =
 
 type Listener = (route: Route) => void;
 
-let current: Route = { name: "login" };
+let current: Route = { name: "home" };
 const listeners = new Set<Listener>();
 
 function parseHash(hash: string): Route {
   const raw = hash.replace(/^#\/?/, "");
   const [a, b, c] = raw.split("/");
-  if (!a || a === "login") return { name: "login" };
+  if (!a || a === "home" || a === "login") return { name: "home" };
   if (a === "dev" && !b) return { name: "dev-home" };
   if (a === "dev" && b === "new") return { name: "dev-new" };
   if (a === "dev" && b === "request" && c) return { name: "dev-request", id: c };
@@ -24,13 +24,13 @@ function parseHash(hash: string): Route {
   if (a === "tester" && !b) return { name: "tester-home" };
   if (a === "tester" && b === "mission" && c) return { name: "tester-mission", id: c };
   if (a === "tester" && b === "rewards") return { name: "tester-rewards" };
-  return { name: "login" };
+  return { name: "home" };
 }
 
 export function routeToHash(route: Route): string {
   switch (route.name) {
-    case "login":
-      return "#/login";
+    case "home":
+      return "#/";
     case "dev-home":
       return "#/dev";
     case "dev-new":
@@ -68,6 +68,6 @@ export function startRouter(onChange: Listener): void {
     onChange(current);
   };
   window.addEventListener("hashchange", sync);
-  if (!location.hash) location.hash = "#/login";
+  if (!location.hash) location.hash = "#/";
   else sync();
 }

@@ -1,6 +1,6 @@
 import "./style.css";
 import { startRouter, type Route } from "./router";
-import { renderLogin } from "./views/login";
+import { renderHome } from "./views/home";
 import { renderDevHome } from "./views/developer/dashboard";
 import { renderDevNew } from "./views/developer/newRequest";
 import { renderDevRequest } from "./views/developer/requestDetail";
@@ -15,8 +15,8 @@ const root = app;
 
 function render(route: Route): void {
   switch (route.name) {
-    case "login":
-      renderLogin(root);
+    case "home":
+      renderHome(root);
       break;
     case "dev-home":
       renderDevHome(root);

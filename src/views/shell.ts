@@ -21,7 +21,7 @@ export function shell(opts: {
   return `
     <div class="app-shell">
       <header class="topbar">
-        <a class="brand" href="#/${opts.role === "developer" ? "dev" : "tester"}">
+        <a class="brand" href="#/">
           <span class="brand-mark">P</span>
           PlayProof
         </a>
@@ -31,7 +31,7 @@ export function shell(opts: {
             <span class="avatar">${user.name.slice(0, 1)}</span>
             <span>${opts.role === "developer" ? currentUser.developer.studio : user.name}</span>
           </div>
-          <button class="btn btn-ghost" type="button" data-go="login">로그아웃</button>
+          <button class="btn btn-ghost" type="button" data-go="home">홈으로</button>
         </div>
       </header>
       <main class="page">${opts.body}</main>
@@ -40,8 +40,8 @@ export function shell(opts: {
 }
 
 export function bindShellActions(root: HTMLElement): void {
-  root.querySelector("[data-go='login']")?.addEventListener("click", () => {
-    navigate({ name: "login" });
+  root.querySelector("[data-go='home']")?.addEventListener("click", () => {
+    navigate({ name: "home" });
   });
 }
 
